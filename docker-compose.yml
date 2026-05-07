@@ -1,0 +1,27 @@
+version: "3.9"
+
+services:
+  gerador:
+    build: .
+    container_name: ecommerce_gerador
+    command: python src/gerador.py
+    environment:
+      DATABASE_URL: data/ecommerce.db
+    volumes:
+      - db_data:/app/data
+
+  dashboard:
+    build: .
+    container_name: ecommerce_dashboard
+    command: python -m streamlit run src/dashboard.py --server.port=8501 --server.address=0.0.0.0
+    ports:
+      - "8501:8501"
+    depends_on:
+      - gerador
+    environment:
+      DATABASE_URL: data/ecommerce.db
+    volumes:
+      - db_data:/app/data
+
+volumes:
+  db_data:

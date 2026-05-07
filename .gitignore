@@ -1,0 +1,11 @@
+# Banco de dados
+data/ecommerce.db
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.env
+
+# Docker
+*.log
