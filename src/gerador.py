@@ -66,11 +66,12 @@ cursor.executemany(
 
 # PRODUTOS
 produtos = [
-    ("celular", 1500, 1), ("notebook", 3500, 1), ("fone", 200, 1),
-    ("camisa", 80, 2), ("tênis", 200, 2), ("jaqueta", 300, 2),
-    ("panela", 120, 3), ("cadeira", 400, 3), ("mesa", 700, 3),
-    ("what if?", 90, 4), ("mulherzinhas", 50, 4), ("a guerra da papoula", 40, 4)
-]
+    ("celular", 1500, 1), ("notebook", 3500, 1), ("fone", 200, 1), ("Smartwatch", 700, 1), ("Caixa de Som", 300, 1),
+    ("camisa", 80, 2), ("tênis", 200, 2), ("jaqueta", 300, 2), ("Vestido", 140, 2), ("Saia", 90, 2),
+    ("panela", 120, 3), ("cadeira", 400, 3), ("mesa", 700, 3), ("Liquidificador", 180, 3), ("Armário", 1800, 3),
+    ("what if?", 90, 4), ("mulherzinhas", 50, 4), ("a guerra da papoula", 60, 4), ("1984", 25, 4),
+    ("Percy Jackson", 45, 4)]
+
 
 cursor.executemany(
     "INSERT INTO produtos (nome, preco, categoria_id) VALUES (?, ?, ?)", produtos)
@@ -79,7 +80,7 @@ cursor.executemany(
 # CLIENTES
 estados = ["SP", "RJ", "MG", "RS", "BA", "PR", "PI", "AL", "PE", "CE"]
 
-for _ in range(50):
+for _ in range(500):
     cursor.execute(
         "INSERT INTO clientes (nome, estado) VALUES (?, ?)",
         (fake.name(), random.choice(estados))
@@ -95,7 +96,7 @@ produtos_dict = {p[0]: p[1] for p in produtos_db}
 
 pedidos = []
 
-NUM_PEDIDOS = 5000
+NUM_PEDIDOS = 15000
 sazonalidade = {
 1: (1, 2),   # janeiro (férias)
 2: (1, 2),

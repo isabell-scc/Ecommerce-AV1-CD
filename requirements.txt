@@ -1,5 +1,11 @@
+fastapi
+uvicorn[standard]
 streamlit
 pandas
 plotly
 sqlalchemy
 faker
+prophet
+scikit-learn
+requests
+numpy

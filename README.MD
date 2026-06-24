@@ -1,109 +1,71 @@
-# 📊 Dashboard de Vendas de E-commerce
+# 📊 Dashboard de Vendas de E-commerce — AV2
 
-Projeto desenvolvido para a Avaliação 1 da disciplina de Ciência de Dados (NES).
+Projeto desenvolvido para as Avaliações 1 e 2 da disciplina de Ciência de Dados (NES).
 
-O objetivo é simular dados de um e-commerce, armazená-los em um banco relacional e disponibilizar um dashboard interativo para análise das vendas.
-
----
-
-## 🎯 Objetivo
-
-Analisar o desempenho de vendas de um e-commerce, permitindo:
-
-* Identificar padrões e tendências de vendas
-* Avaliar faturamento por categoria
-* Visualizar produtos mais vendidos
-* Analisar a evolução temporal das vendas
+O sistema simula dados de um e-commerce, armazena-os em um banco relacional SQLite, expõe uma API REST com FastAPI e disponibiliza um dashboard interativo preditivo com Streamlit.
 
 
 ---
 
-## ⚙️ Arquitetura do Projeto
+## Rotas da API
 
-O sistema é composto por três partes principais:
+| Método | Rota       | Descrição |
+|--------|------------|-----------|
+| GET    | `/health`  | Health check — retorna `{"status": "ok"}` |
+| GET    | `/dados`   | Registros do banco com filtros opcionais |
+| GET    | `/resumo`  | KPIs agregados (faturamento, pedidos, ticket médio) |
 
-1. **Gerador de dados**
+**Query params disponíveis em `/dados` e `/resumo`:**
+- `categoria` — ex: `Eletrônicos`, `Roupas`, `Casa`, `Livros`
+- `estado` — ex: `SP`, `RJ`, `MG`
+- `data_inicio` e `data_fim` — formato `YYYY-MM-DD`
 
-   * Script em Python que cria dados simulados
-   * Uso de Faker para dados realistas
-   * Uso de `random.seed(42)` para reprodutibilidade
-
-2. **Banco de dados (SQLite)**
-
-   * Armazena os dados gerados
-   * Estrutura relacional
-
-3. **Dashboard (Streamlit)**
-
-   * Visualização interativa dos dados
-   * Filtros dinâmicos e gráficos
-
-Fluxo do sistema:
-
-Gerador → Banco → Dashboard
+**Documentação interativa:** http://localhost:8000/docs
 
 ---
 
-## 📊 Dashboard
+## ▶ Como Executar
 
-O dashboard permite análise interativa com:
+### Pré-requisito
+- Docker instalado
 
-### KPIs
-
-* 💰 Faturamento total
-* 📦 Número de pedidos
-* 🧾 Ticket médio
-
-### Visualizações
-
-* Faturamento por categoria
-* Produtos mais vendidos
-* Evolução temporal das vendas
-
-### Filtros
-
-* Estado
-* Ano
-* Intervalo de meses
-
----
-
-
-## ▶️ Como Executar o Projeto
-
-### Pré-requisitos
-
-* Docker instalado
-
-### Passos
-
+### Subir tudo
 ```bash
-docker compose up
+docker compose up --build
 ```
 
-Após executar, acesse o dashboard em:
-
-http://localhost:8501
+Aguarde os três serviços iniciarem. Depois acesse:
+- **Dashboard:** http://localhost:8501
+- **API (docs):** http://localhost:8000/docs
 
 ---
 
-## 📁 Estrutura do Projeto
+## Modelos Preditivos
 
-```bash
+O dashboard permite selecionar entre dois modelos:
+
+- **Random Forest** com Grid Search (3-fold CV) otimizando hiperparâmetros `n_estimators`, `max_depth` e `min_samples_split`
+- **Prophet** com sazonalidade semanal, anual, mensal e feriados brasileiros
+
+**Métricas exibidas no dashboard:** MAE, RMSE e MAPE no período de teste (dados após t0).
+
+---
+
+## Estrutura do Projeto
+
+```
 .
+├── api/
+│   └── main.py          # FastAPI com rotas /health, /dados, /resumo
+├── dashboard/
+│   ├── dashboard.py     # Interface Streamlit
+│   └── modelo.py        # Lógica de ML (Random Forest + Prophet)
 ├── src/
-│   ├── dashboard.py
-│   └── gerador.py
+│   └── gerador.py       # Gerador de dados sintéticos
 ├── data/
-├── slides/
-│   ├── apresentacao_ecommerce.tex
-│   └── apresentacai_ecommerce.pdf
+│   └── ecommerce.db     # Banco SQLite (gerado automaticamente)
 ├── docker-compose.yml
 ├── Dockerfile
 ├── requirements.txt
-└── README.md
+└── README.MD
 ```
-
-
-
----
