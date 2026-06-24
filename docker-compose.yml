@@ -5,21 +5,32 @@ services:
     build: .
     container_name: ecommerce_gerador
     command: python src/gerador.py
-    environment:
-      DATABASE_URL: data/ecommerce.db
     volumes:
       - db_data:/app/data
+
+  api:
+    build: .
+    container_name: ecommerce_api
+    command: uvicorn api.main:app --host 0.0.0.0 --port 8000 --no-access-log
+    ports:
+      - "8000:8000"
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
 
   dashboard:
     build: .
     container_name: ecommerce_dashboard
-    command: python -m streamlit run src/dashboard.py --server.port=8501 --server.address=0.0.0.0
+    command: python -m streamlit run dashboard/dashboard.py --server.port=8501 --server.address=0.0.0.0
     ports:
       - "8501:8501"
     depends_on:
-      - gerador
+      - api
     environment:
-      DATABASE_URL: data/ecommerce.db
+      API_URL: http://api:8000
     volumes:
       - db_data:/app/data
 
